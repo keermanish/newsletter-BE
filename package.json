@@ -1,0 +1,35 @@
+{
+  "name": "newletter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp",
+    "prod": "gulp prod",
+    "stage": "gulp stage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keermanish/newsletter-BE.git"
+  },
+  "author": "keermanish@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keermanish/newsletter-BE/issues"
+  },
+  "homepage": "https://github.com/keermanish/newsletter-BE#readme",
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-watch": "^4.3.11",
+    "pm2": "^2.5.0",
+    "rimraf": "^2.6.1",
+    "run-sequence": "^1.2.2"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
