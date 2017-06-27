@@ -7,9 +7,9 @@ import babel from 'gulp-babel';
 
 /* required path config */
 const path = {
-	entry: './dist/index.js',
-	src: ['./src/**/*.js'],
-	dist: './dist'
+	'entry': './dist/index.js',
+	'src': ['./src/**/*.js'],
+	'dist': './dist'
 };
 
 /* default/local mode - gulp */
@@ -29,17 +29,17 @@ gulp.task('stage', ['set-stage-node-env'], cb => {
 
 /* set development env */
 gulp.task('set-dev-node-env', function() {
-  return process.env.NODE_ENV = 'development';
+  process.env.NODE_ENV = 'development';
 });
 
 /* set production env */
 gulp.task('set-prod-node-env', function() {
-  return process.env.NODE_ENV = 'production';
+  process.env.NODE_ENV = 'production';
 });
 
 /* set stage env */
 gulp.task('set-stage-node-env', function() {
-  return process.env.NODE_ENV = 'stage';
+  process.env.NODE_ENV = 'stage';
 });
 
 /**
@@ -59,7 +59,7 @@ gulp.task('watch', () => {
 	return watch(path.src, () => {
 		gulp.start('watch-build');
 	});
-});;
+});
 
 /**
  * task update scripts as per changes made
@@ -80,7 +80,10 @@ gulp.task('clean', cb => {
 gulp.task('babel', () => {
 	return gulp.src(path.src)
 		.pipe(babel({
-			presets: ['es2015']
+			'presets': ['es2015'],
+			'plugins': [
+				['inline-json-import', {}]
+			]
 		}))
 		.pipe(gulp.dest(path.dist));
 });
@@ -95,8 +98,8 @@ gulp.task('start-server', () => {
 
 	/* Base Configuration [irrespective of the environment] */
 	let pm2Config = {
-		name: 'newsletter-BE',
-		script: path.entry
+		'name': 'newsletter-BE',
+		'script': path.entry
 	};
 
 	/* Environment specific configuration */
@@ -104,7 +107,7 @@ gulp.task('start-server', () => {
 		pm2Config['exec_mode'] = 'fork';
 	} else {
 		pm2Config['exec_mode'] = 'cluster';
-    
+
     /**
      * number of instances for your clustered app, 0 means as much instances as you have CPU cores.
      * a negative value means CPU cores - value (e.g -1 on a 4 cores machine will spawn 3 instances)
@@ -120,34 +123,38 @@ gulp.task('start-server', () => {
 		pm2Config['error_file'] = '/var/log/newsletter/app.stderr.log';
 	}
 
-	pm2.connect(true, function(err) {
-		if (err) {
-			console.error(err);
+	pm2.connect(true, failed => {
+		if (failed) {
+			console.error(failed);
 			process.exit(2);
 		}
 
-		pm2.start(pm2Config, function(error, apps) {
+		pm2.start(pm2Config, (err, apps) => {
 
       /* disconnect old connection */
     	pm2.disconnect();
-    	if (err) throw err
+    	if (err) {
+				throw err;
+			}
     });
 	});
 });
 
 /* task to restart running server */
 gulp.task('restart-server', () => {
-	pm2.connect(true, function(err) {
-		if (err) {
-			console.error(err);
+	pm2.connect(true, failed => {
+		if (failed) {
+			console.error(failed);
 			process.exit(2);
 		}
 
-		pm2.restart('all', function(error, proc) {
+		pm2.restart('all', (err, proc) => {
 
       /* disconnect old connection */
 			pm2.disconnect();
-    	if (err) throw err
+    	if (err) {
+				throw err;
+			}
     });
 	});
 });
