@@ -4,8 +4,9 @@ import compression from 'compression';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 
-import config from './config/config.js';
-import { url } from './config/db';
+import config from './config/config';
+import routes from './routes/';
+import dbConnection from './config/db';
 
 const app = express();
 const port = process.env.PORT || config.PORT;
@@ -25,9 +26,8 @@ app.use(bodyParser.urlencoded({ 'extended': false }));
 /* parse application/json */
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send(`Root Route`);
-});
+/* all application routes */
+app.use(routes);
 
 app.listen(port, () => {
   console.log(`App listen on ${port}`);

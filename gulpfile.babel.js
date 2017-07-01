@@ -8,24 +8,24 @@ import nodemon from 'gulp-nodemon';
 
 /* required path config */
 const path = {
-	'entry': './dist/index.js',
-	'src': ['./src/**/*.js'],
-	'dist': './dist'
+  'entry': './dist/index.js',
+  'src': ['./src/**/*.js'],
+  'dist': './dist'
 };
 
 /* default/local mode - gulp */
 gulp.task('default', ['set-dev-node-env'], cb => {
-	run('build', 'watch', cb);
+  run('build', 'watch', cb);
 });
 
 /* production mode - gulp prod */
 gulp.task('prod', ['set-prod-node-env'], cb => {
-	run('build', 'watch', cb);
+  run('build', 'watch', cb);
 });
 
 /* stage mode - gulp prod */
 gulp.task('stage', ['set-stage-node-env'], cb => {
-	run('build', 'watch', cb);
+  run('build', 'watch', cb);
 });
 
 /* set development env */
@@ -50,16 +50,16 @@ gulp.task('set-stage-node-env', function() {
  * start-server - start node server
  */
 gulp.task('build', cb => {
-	run('clean', 'babel', 'start-server', cb);
+  run('clean', 'babel', 'start-server', cb);
 });
 
 /**
  * task to watch for changes
  */
 gulp.task('watch', () => {
-	return watch(path.src, () => {
-		gulp.start('watch-build');
-	});
+  return watch(path.src, () => {
+    gulp.start('watch-build');
+  });
 });
 
 /**
@@ -69,112 +69,112 @@ gulp.task('watch', () => {
  * restart-server - restart node server
  */
 gulp.task('watch-build', cb => {
-	run('clean', 'babel', 'restart-server', cb);
+  run('clean', 'babel', 'restart-server', cb);
 });
 
 /* task to clear old scripts */
 gulp.task('clean', cb => {
-	rimraf(path.dist, cb);
+  rimraf(path.dist, cb);
 });
 
 /* task to transpile ES6 -> ES5 */
 gulp.task('babel', () => {
-	return gulp.src(path.src)
-		.pipe(babel({
-			'presets': ['es2015'],
-			'plugins': [
-				['inline-json-import', {}]
-			]
-		}))
-		.pipe(gulp.dest(path.dist));
+  return gulp.src(path.src)
+    .pipe(babel({
+      'presets': ['es2015'],
+      'plugins': [
+        ['inline-json-import', {}]
+      ]
+    }))
+    .pipe(gulp.dest(path.dist));
 });
 
 /* starts a new server instance */
 gulp.task('start-server', () => {
 
-	/* for development skip pm2 process */
-	if(process.env.NODE_ENV === 'development') {
+  /* for development skip pm2 process */
+  if(process.env.NODE_ENV === 'development') {
 
-		/* using nodemon for development mode - since it does not add addition load on the system */
-		nodemon({
-	    script: path.entry,
-			ext: 'js html',
-			env: { 'NODE_ENV': 'development' }
-		});
+    /* using nodemon for development mode - since it does not add addition load on the system */
+    nodemon({
+      script: path.entry,
+      ext: 'js html',
+      env: { 'NODE_ENV': 'development' }
+    });
 
-		return true;
-	}
+    return true;
+  }
 
-	/*
-		- All About PM2 Configuration file - http://pm2.keymetrics.io/docs/usage/application-declaration
-		- All the available options that can be added to PM2 config file - http://pm2.keymetrics.io/docs/usage/application-declaration/#list-of-attributes-available
-	*/
+  /*
+    - All About PM2 Configuration file - http://pm2.keymetrics.io/docs/usage/application-declaration
+    - All the available options that can be added to PM2 config file - http://pm2.keymetrics.io/docs/usage/application-declaration/#list-of-attributes-available
+  */
 
-	/* Base Configuration [irrespective of the environment] */
-	let pm2Config = {
-		'name': 'newsletter-BE',
-		'script': path.entry
-	};
+  /* Base Configuration [irrespective of the environment] */
+  let pm2Config = {
+    'name': 'newsletter-BE',
+    'script': path.entry
+  };
 
-	/* Environment specific configuration */
-	if(process.env.NODE_ENV === 'stage') {
-		pm2Config['exec_mode'] = 'fork';
-	} else {
-		pm2Config['exec_mode'] = 'cluster';
+  /* Environment specific configuration */
+  if(process.env.NODE_ENV === 'stage') {
+    pm2Config['exec_mode'] = 'fork';
+  } else {
+    pm2Config['exec_mode'] = 'cluster';
 
     /**
      * number of instances for your clustered app, 0 means as much instances as you have CPU cores.
      * a negative value means CPU cores - value (e.g -1 on a 4 cores machine will spawn 3 instances)
      */
-		pm2Config['instances'] = 0;
+    pm2Config['instances'] = 0;
 
     /**
      * your app will be restarted by PM2 if it exceeds the amount of memory specified.
      * human-friendly format : it can be “10M”, “100K”, “2G” and so on…
      */
-		pm2Config['max_memory_restart'] = '250M';
-		pm2Config['out_file'] = '/var/log/newsletter/app.stdout.log';
-		pm2Config['error_file'] = '/var/log/newsletter/app.stderr.log';
-	}
+    pm2Config['max_memory_restart'] = '250M';
+    pm2Config['out_file'] = '/var/log/newsletter/app.stdout.log';
+    pm2Config['error_file'] = '/var/log/newsletter/app.stderr.log';
+  }
 
-	pm2.connect(true, failed => {
-		if (failed) {
-			console.error(failed);
-			process.exit(2);
-		}
+  pm2.connect(true, failed => {
+    if (failed) {
+      console.error(failed);
+      process.exit(2);
+    }
 
-		pm2.start(pm2Config, (err, apps) => {
+    pm2.start(pm2Config, (err, apps) => {
 
       /* disconnect old connection */
-    	pm2.disconnect();
-    	if (err) {
-				throw err;
-			}
+      pm2.disconnect();
+      if (err) {
+        throw err;
+      }
     });
-	});
+  });
 });
 
 /* task to restart running server */
 gulp.task('restart-server', () => {
 
-	/* for development skip pm2 process */
-	if(process.env.NODE_ENV === 'development') {
-		return true;
-	}
+  /* for development skip pm2 process */
+  if(process.env.NODE_ENV === 'development') {
+    return true;
+  }
 
-	pm2.connect(true, failed => {
-		if (failed) {
-			console.error(failed);
-			process.exit(2);
-		}
+  pm2.connect(true, failed => {
+    if (failed) {
+      console.error(failed);
+      process.exit(2);
+    }
 
-		pm2.restart('all', (err, proc) => {
+    pm2.restart('all', (err, proc) => {
 
       /* disconnect old connection */
-			pm2.disconnect();
-    	if (err) {
-				throw err;
-			}
+      pm2.disconnect();
+      if (err) {
+        throw err;
+      }
     });
-	});
+  });
 });
