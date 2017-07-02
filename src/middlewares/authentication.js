@@ -1,0 +1,24 @@
+import User from '../models/user';
+
+/**
+ * a middleware to find user info based on token passed
+ * if user is present then call next routes 
+ */
+export const isAuthorizedUser = (req, res, next) => {
+  const token = req.header('x-auth');
+
+  User.findUserByToken(token)
+    .then(user => {
+      if(!user) {
+        return Promise.reject({'status': 401});
+      }
+
+      req.user = user;
+      req.token = token;
+
+      next();
+    })
+    .catch(err => {
+      res.status(err.status || 401).send(err);
+    });
+};
