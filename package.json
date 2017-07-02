@@ -32,6 +32,7 @@
     "run-sequence": "^1.2.2"
   },
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "compression": "^1.6.2",
     "express": "^4.15.3",
