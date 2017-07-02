@@ -5,7 +5,7 @@ import Todo from '../models/todo';
 /* controller to creat todo */
 export const createTodo = (req, res) => {
   const todo = new Todo({
-    name: req.body.name
+    'name': req.body.name
   });
 
   todo.save()
