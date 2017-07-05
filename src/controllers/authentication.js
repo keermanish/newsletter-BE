@@ -32,11 +32,13 @@ export const userLogin = (req, res) => {
  */
 export const createUser = (req, res) => {
   var user = new User({
-    'name': req.body.name,
+    'fname': req.body.name.fname,
+    'lname': req.body.name.lname,
     'email': req.body.email,
-    'number': req.body.number,
-    'password': req.body.password,
-    'role': req.body.role === 'admin' ? 'admin' : 'normal'
+    'phone': req.body.phone,
+    'designation': req.body.designation,
+    'password': req.body.credentials.password,
+    'role': req.body.role || 'normal'
   });
 
   user.save()

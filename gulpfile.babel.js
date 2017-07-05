@@ -4,7 +4,6 @@ import watch from 'gulp-watch';
 import rimraf from 'rimraf';
 import run from 'run-sequence';
 import babel from 'gulp-babel';
-import nodemon from 'gulp-nodemon';
 
 /* required path config */
 const path = {
@@ -91,20 +90,6 @@ gulp.task('babel', () => {
 
 /* starts a new server instance */
 gulp.task('start-server', () => {
-
-  /* for development skip pm2 process */
-  if(process.env.NODE_ENV === 'development') {
-
-    /* using nodemon for development mode - since it does not add addition load on the system */
-    nodemon({
-      script: path.entry,
-      ext: 'js html',
-      env: { 'NODE_ENV': 'development' }
-    });
-
-    return true;
-  }
-
   /*
     - All About PM2 Configuration file - http://pm2.keymetrics.io/docs/usage/application-declaration
     - All the available options that can be added to PM2 config file - http://pm2.keymetrics.io/docs/usage/application-declaration/#list-of-attributes-available
@@ -117,7 +102,7 @@ gulp.task('start-server', () => {
   };
 
   /* Environment specific configuration */
-  if(process.env.NODE_ENV === 'stage') {
+  if(process.env.NODE_ENV === 'development') {
     pm2Config['exec_mode'] = 'fork';
   } else {
     pm2Config['exec_mode'] = 'cluster';
@@ -156,11 +141,6 @@ gulp.task('start-server', () => {
 
 /* task to restart running server */
 gulp.task('restart-server', () => {
-
-  /* for development skip pm2 process */
-  if(process.env.NODE_ENV === 'development') {
-    return true;
-  }
 
   pm2.connect(true, failed => {
     if (failed) {

@@ -41,6 +41,7 @@
     "lodash": "^4.17.4",
     "mongodb": "^2.2.29",
     "mongoose": "^4.11.0",
+    "mongoose-unique-validator": "^1.0.5",
     "morgan": "^1.8.2",
     "validator": "^7.1.0"
   }

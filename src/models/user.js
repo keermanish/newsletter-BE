@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import uniqueValidator from 'mongoose-unique-validator';
 import _ from 'lodash';
 
 import config from '../config/config';
@@ -12,20 +13,30 @@ import {
 } from '../helpers/validation';
 
 const userSchema = new mongoose.Schema({
-  'name': {
+  'fname': {
     'type': String,
     'trim': true,
-    'required': [true, 'Please provide your name'],
+    'required': [true, 'Please provide your first name'],
     'validate': {
       'isAsync': false,
       'validator': isValidName,
-      'message': 'Please enter a valid name'
+      'message': 'Please enter a valid first name'
     }
   },
-  'number': {
+  'lname': {
     'type': String,
-    'unique': true,
     'trim': true,
+    'required': [true, 'Please provide your last name'],
+    'validate': {
+      'isAsync': false,
+      'validator': isValidName,
+      'message': 'Please enter a valid last name'
+    }
+  },
+  'phone': {
+    'type': String,
+    'trim': true,
+    'unique': [true, 'Phone number has already been used'],
     'required': [true, 'Please enter your phone number'],
     'validate': {
       'isAsync': false,
@@ -35,18 +46,35 @@ const userSchema = new mongoose.Schema({
   },
   'email': {
     'type': String,
-    'unique': true,
-    'required': [true, 'Please enter your email ID'],
     'trim': true,
+    'unique': [true, 'Email ID has alrady been used'],
+    'required': [true, 'Please enter your email ID'],
     'validate': {
       'isAsync': false,
       'validator': isValidEmail,
       'message': 'Please enter a valid email'
     }
   },
+  'designation': {
+    'type': String,
+    'trim': true,
+    'required': [true, 'Please provide your designation'],
+    'validate': {
+      'isAsync': false,
+      'validator': isValidName,
+      'message': 'Please enter a valid designation'
+    }
+  },
+  'profilePic': {
+    'type': String
+  },
   'role': {
     'type': String,
     'trim': true,
+    'enum': {
+      'values': ['admin', 'normal'],
+      'message': 'Please provide valid user role'
+    },
     'required': true,
     'default': 'normal' /* normal, admin - to manage access level */
   },
@@ -194,6 +222,11 @@ userSchema.pre('save', function(next) {
   }
 });
 
+/**
+ * since mogoose does not provide custom error message for unique fields
+ * {PATH} {VALUE} {TYPE}
+ */
+userSchema.plugin(uniqueValidator, { 'message': 'Error, expected {VALUE} to be unique.' });
 const User = mongoose.model('User', userSchema);
 
 export default User;
