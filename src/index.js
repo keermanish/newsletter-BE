@@ -3,13 +3,18 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import config from './config/config';
 import routes from './routes/';
 import dbConnection from './config/db';
+import { corsOptions } from './config/cors';
 
 const app = express();
 const port = process.env.PORT || config.PORT;
+
+/* check for CORS */
+app.use(cors(corsOptions));
 
 /* middleware will attempt to compress response bodies */
 app.use(compression());
