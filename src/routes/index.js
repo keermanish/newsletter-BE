@@ -1,9 +1,13 @@
 import express from 'express';
+import path from 'path';
 
 /* all routes */
 import todoRoutes from './todo';
 import userRoutes from './user';
 import authenticationRoutes from './authentication';
+
+/* all common routes goes here */
+import commonRoutes from './common';
 
 /* all middlewares */
 import { isAuthorizedUser } from '../middlewares/authentication';
@@ -29,5 +33,11 @@ routes.use('/user', authenticationRoutes);
  * GET /user/:id
  */
 routes.use('/user', isAuthorizedUser, userRoutes);
+
+/**
+ * all common routes goes here
+ * GET /upload/:type/:file
+ */
+routes.use(commonRoutes);
 
 export default routes;

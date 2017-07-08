@@ -17,6 +17,10 @@ const userRoutes = express.Router();
  */
 userRoutes.get('/me', getUser);
 
+/**
+ * route to set user avatar
+ * POST /user/avatar
+ */
 userRoutes.post('/avatar', avatarUpload, setAvatar);
 
 export default userRoutes;
