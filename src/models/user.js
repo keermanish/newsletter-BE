@@ -65,18 +65,18 @@ const userSchema = new mongoose.Schema({
       'message': 'Please enter a valid designation'
     }
   },
-  'profilePic': {
+  'avatar': {
     'type': String
   },
   'role': {
     'type': String,
     'trim': true,
     'enum': {
-      'values': ['admin', 'normal'],
+      'values': ['admin', 'publisher', 'user'],
       'message': 'Please provide valid user role'
     },
     'required': true,
-    'default': 'normal' /* normal, admin - to manage access level */
+    'default': 'user' /* normal, admin - to manage access level */
   },
   'password': {
     'type': String,

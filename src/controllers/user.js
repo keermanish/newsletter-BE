@@ -1,4 +1,6 @@
 import User from '../models/user';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * controller to get user info
@@ -12,4 +14,29 @@ export const getUser = (req, res) => {
    * and assign it to req object
    */
   res.send(req.user);
+};
+
+/**
+ * controller to set user avatar/profile pic
+ * once image store successfully then delete previous avatar
+ * POST /user/avatar
+ */
+export const setAvatar = (req, res) => {
+  const oldAvatarPath = req.user.avatar;
+
+  req.user.update({
+      'avatar': `${req.file.destination}${req.file.filename}`
+    },{ "new": true})
+    .then(user => {
+
+      /* check for old avatar */
+      if(oldAvatarPath) {
+        fs.unlink(path.join(__dirname, `./../../${oldAvatarPath}`));
+      }
+
+      res.send(user);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
 };

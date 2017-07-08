@@ -1,6 +1,13 @@
 import express from 'express';
 
-import { getUser } from '../controllers/user';
+import multer from 'multer';
+
+import {
+  getUser,
+  setAvatar
+} from '../controllers/user';
+
+import { avatarUpload } from '../config/upload';
 
 const userRoutes = express.Router();
 
@@ -9,5 +16,7 @@ const userRoutes = express.Router();
  * GET /user/me
  */
 userRoutes.get('/me', getUser);
+
+userRoutes.post('/avatar', avatarUpload, setAvatar);
 
 export default userRoutes;
