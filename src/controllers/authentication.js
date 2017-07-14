@@ -52,19 +52,3 @@ export const createUser = (req, res) => {
       res.status(err.status || 400).send(err);
     });
 };
-
-/**
- * controller to logout user
- * required x-auth in header
- * passed from isAuthorizedUser middleware hence user object is available
- * DELETE /user/logout
- */
-export const logoutUser = (req, res) => {
-  req.user.removeToken(req.header('x-auth'))
-    .then(() => {
-      res.send();
-    })
-    .catch(err => {
-      res.status(err.status || 401).send(err);
-    });
-};

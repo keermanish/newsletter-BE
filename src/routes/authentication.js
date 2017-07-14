@@ -3,8 +3,7 @@ import express from 'express';
 /* all controllers */
 import {
   userLogin,
-  createUser,
-  logoutUser
+  createUser
 } from '../controllers/authentication';
 
 /* all middleware */
@@ -25,11 +24,5 @@ authenticationRoutes.post('/login', userLogin);
  * POST /user/create
  */
 authenticationRoutes.post('/create', createUser);
-
-/**
- * logout current user
- * DELETE /user/logout
- */
-authenticationRoutes.delete('/logout', isAuthorizedUser, logoutUser);
 
 export default authenticationRoutes;

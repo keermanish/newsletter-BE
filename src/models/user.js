@@ -82,17 +82,7 @@ const userSchema = new mongoose.Schema({
     'type': String,
     'required': [true, 'Please enter your password'],
     'minlength': [6, 'Password is too weak']
-  },
-  'tokens': [{
-    'access': {
-      'type': String,
-      'required': true
-    },
-    'token': {
-      'type': String,
-      'required': true
-    }
-  }]
+  }
 });
 
 /**
@@ -101,7 +91,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function() {
   const user = this;
   const userObject = user.toObject();
-  const skipFields = ['password', 'tokens'];
+  const skipFields = ['password'];
 
   return _.omit(userObject, skipFields);
 };
@@ -119,32 +109,7 @@ userSchema.methods.generateAuthToken = function() {
     access
   }, config.AUTH_KEY).toString();
 
-  user.tokens.push({token, access});
-
-  return user.save()
-    .then(() => {
-      return token;
-    });
-};
-
-/**
- * instance method to remove user token
- * useful for logout
- * function - reqtuired 'this'
- * @param {String} token [user token]
- */
-userSchema.methods.removeToken = function(token) {
-  const user = this;
-
-  if(!token) {
-    return Promise.reject();
-  }
-
-  return user.update({
-    '$pull': {
-      'tokens': { token }
-    }
-  });
+  return Promise.resolve(token);
 };
 
 /**
@@ -167,11 +132,7 @@ userSchema.statics.findUserByToken = function(token) {
     return Promise.reject({'status': 400});
   }
 
-  return user.findOne({
-    '_id': decode._id,
-    'tokens.token': token,
-    'tokens.access': 'auth'
-  });
+  return user.findOne({'_id': decode._id});
 };
 
 /**
