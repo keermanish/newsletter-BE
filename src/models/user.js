@@ -13,24 +13,14 @@ import {
 } from '../helpers/validation';
 
 const userSchema = new mongoose.Schema({
-  'fname': {
+  'name': {
     'type': String,
     'trim': true,
-    'required': [true, 'Please provide your first name'],
+    'required': [true, 'Please provide your full name'],
     'validate': {
       'isAsync': false,
       'validator': isValidName,
-      'message': 'Please enter a valid first name'
-    }
-  },
-  'lname': {
-    'type': String,
-    'trim': true,
-    'required': [true, 'Please provide your last name'],
-    'validate': {
-      'isAsync': false,
-      'validator': isValidName,
-      'message': 'Please enter a valid last name'
+      'message': 'Please enter a valid full name'
     }
   },
   'phone': {
@@ -41,19 +31,24 @@ const userSchema = new mongoose.Schema({
     'validate': {
       'isAsync': false,
       'validator': isValidPhoneNumber,
-      'message': 'Please eneter a valid phone number'
+      'message': 'Please enter a valid phone number'
     }
   },
   'email': {
     'type': String,
     'trim': true,
-    'unique': [true, 'Email ID has alrady been used'],
+    'unique': [true, 'Email ID has already been used'],
     'required': [true, 'Please enter your email ID'],
     'validate': {
       'isAsync': false,
       'validator': isValidEmail,
       'message': 'Please enter a valid email'
     }
+  },
+  'password': {
+    'type': String,
+    'required': [true, 'Please enter your password'],
+    'minlength': [6, 'Password is too weak']
   },
   'designation': {
     'type': String,
@@ -75,13 +70,23 @@ const userSchema = new mongoose.Schema({
       'values': ['admin', 'publisher', 'user'],
       'message': 'Please provide valid user role'
     },
-    'required': true,
-    'default': 'user' /* normal, admin - to manage access level */
+    'required': [true, 'Please enter your role'],
+    'default': 'user'
   },
-  'password': {
+  'status': {
     'type': String,
-    'required': [true, 'Please enter your password'],
-    'minlength': [6, 'Password is too weak']
+    'enum': {
+      'values': ['active', 'inactive', 'pending']
+    },
+    'default': 'pending'
+  },
+  'dob': {
+    'type': Date,
+    'required': [true, 'Please provide date of birth']
+  },
+  'doj': {
+    'type': Date,
+    'required': [true, 'Please provide date of joining']
   }
 });
 
@@ -103,11 +108,10 @@ userSchema.methods.toJSON = function() {
  */
 userSchema.methods.generateAuthToken = function() {
   const user = this;
-  const access = 'auth';
-  const token = jwt.sign({
-    '_id': user._id.toHexString(),
-    access
-  }, config.AUTH_KEY).toString();
+  const tokenData = Object.assign({
+    'access': 'auth'
+  }, user.toObject());
+  const token = jwt.sign(tokenData, config.AUTH_KEY).toString();
 
   return Promise.resolve(token);
 };
@@ -148,6 +152,8 @@ userSchema.statics.findUserByCredentials = function(email, password) {
     .then(res => {
       if(!res) {
         return Promise.reject({'status': 404});
+      } else if(res && res.status !== 'active') {
+        return Promise.reject({'status': 401});
       }
 
       return new Promise((resolve, reject) => {

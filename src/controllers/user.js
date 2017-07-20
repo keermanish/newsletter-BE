@@ -45,3 +45,29 @@ export const setAvatar = (req, res) => {
       res.status(400).send(err);
     });
 };
+
+/**
+ * controller to update user information
+ * pass whatever you want update (it should be part of user schema)
+ * PUT /user/:id
+ */
+export const updateUser = (req, res) => {
+  const userID = req.params.id;
+  const userUpdatedDate = req.body;
+
+  User.findByIdAndUpdate(userID, {
+      '$set': userUpdatedDate
+    }, {
+      'new': true
+    })
+    .then(user => {
+      if(!user) {
+        return Promise.reject({'status': 401});
+      }
+
+      res.status(200).send(user);
+    })
+    .catch(err => {
+      res.status(err.status || 400).send(err);
+    });
+};

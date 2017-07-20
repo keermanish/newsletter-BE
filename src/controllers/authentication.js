@@ -1,4 +1,5 @@
 import express from 'express';
+import moment from 'moment';
 
 import User from '../models/user';
 
@@ -32,12 +33,13 @@ export const userLogin = (req, res) => {
  */
 export const createUser = (req, res) => {
   var user = new User({
-    'fname': req.body.name.fname,
-    'lname': req.body.name.lname,
+    'name': req.body.name,
     'email': req.body.email,
     'phone': req.body.phone,
     'designation': req.body.designation,
     'password': req.body.credentials.password,
+    'dob': req.body.dob ? moment(req.body.dob).toDate() : null,
+    'doj': req.body.doj ? moment(req.body.doj).toDate() : moment().toDate(),
     'role': req.body.role || 'normal'
   });
 
