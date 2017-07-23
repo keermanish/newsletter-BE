@@ -4,7 +4,7 @@ import path from 'path';
 import User from '../models/user';
 
 /**
- * controller to get user info
+ * controller to get current user info
  * GET /user/me
  */
 export const getUser = (req, res) => {
@@ -15,6 +15,46 @@ export const getUser = (req, res) => {
    * and assign it to req object
    */
   res.send(req.user);
+};
+
+/**
+ * controller to get specific users info
+ * GET /user/:id
+ */
+export const getUserByID = (req, res) => {
+  User.findById(req.params.id)
+    .then(user => {
+      if(!user) {
+        return Promise.reject({'status': 404});
+      }
+
+      res.status(200).send(user);
+    })
+    .catch(err => {
+      res.status(err.status || 400).send();
+    });
+};
+
+/**
+ * controller to get list of user
+ * GET /user/list/:status [all, pending, active]
+ */
+export const getUserList = (req, res) => {
+  const filter = req.params.status === 'all' ? {} : {
+    'status': req.params.status
+  };
+
+  User.find(filter)
+    .then(list => {
+      if(!list) {
+        return Promise.reject({'status': 404});
+      }
+
+      res.status(200).send(list);
+    })
+    .catch(err => {
+      res.status(err.status || 400).send();
+    });
 };
 
 /**
