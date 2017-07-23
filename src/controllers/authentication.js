@@ -23,7 +23,11 @@ export const userLogin = (req, res) => {
       res.header('x-auth', token).send(user);
     })
     .catch(err => {
-      res.status(err.status || 404).send(err);
+      const errMessage = err.status === 400 ?
+      'Email ID and password combination does not matched' :
+      'Please enter a valid details';
+
+      res.status(err.status || 404).send(errMessage);
     });
 };
 
@@ -51,6 +55,12 @@ export const createUser = (req, res) => {
       res.header('x-auth', token).send(user);
     })
     .catch(err => {
-      res.status(err.status || 400).send(err);
+      if(err.errors && err.errors.hasOwnProperty('phone')) {
+        res.status(400).send('Phone number should be unique');
+      } else if(err.errors && err.errors.hasOwnProperty('email')) {
+        res.status(400).send('Email ID should be unique');
+      } else {
+        res.status(err.status || 400).send('Unable to register, Please check your details');
+      }
     });
 };
