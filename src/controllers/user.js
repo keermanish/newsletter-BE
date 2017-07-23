@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
 
 import User from '../models/user';
 
@@ -82,7 +83,7 @@ export const setAvatar = (req, res) => {
       res.send(user);
     })
     .catch(err => {
-      res.status(400).send(err);
+      res.status(400).send('Unable to set profile pic, Please try again');
     });
 };
 
@@ -93,12 +94,14 @@ export const setAvatar = (req, res) => {
  */
 export const updateUser = (req, res) => {
   const userID = req.params.id;
-  const userUpdatedDate = req.body;
+  const userUpdatedDate = _.omit(req.body, ['password', '_id']);
 
   User.findByIdAndUpdate(userID, {
       '$set': userUpdatedDate
     }, {
-      'new': true
+      'new': true,
+      'runValidators': true,
+      'context': 'query'
     })
     .then(user => {
       if(!user) {
@@ -108,6 +111,10 @@ export const updateUser = (req, res) => {
       res.status(200).send(user);
     })
     .catch(err => {
-      res.status(err.status || 400).send(err);
+      if(err.message) {
+        res.status(400).send(err.message.substring(err.message.lastIndexOf(':') + 1));
+      } else {
+        res.status(err.status || 400).send('Unable to register, Please check your details');
+      }
     });
 };

@@ -55,10 +55,8 @@ export const createUser = (req, res) => {
       res.header('x-auth', token).send(user);
     })
     .catch(err => {
-      if(err.errors && err.errors.hasOwnProperty('phone')) {
-        res.status(400).send('Phone number should be unique');
-      } else if(err.errors && err.errors.hasOwnProperty('email')) {
-        res.status(400).send('Email ID should be unique');
+      if(err.message) {
+        res.status(400).send(err.message.substring(err.message.lastIndexOf(':') + 1));
       } else {
         res.status(err.status || 400).send('Unable to register, Please check your details');
       }
