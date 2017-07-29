@@ -5,6 +5,10 @@ import uniqueValidator from 'mongoose-unique-validator';
 import _ from 'lodash';
 
 import config from '../config/config';
+import {
+  hashData,
+  compareDate
+} from '../helpers/encryption';
 
 import {
   isValidName,
@@ -156,15 +160,15 @@ userSchema.statics.findUserByCredentials = function(email, password) {
         return Promise.reject({'status': 401});
       }
 
-      return new Promise((resolve, reject) => {
-        bcrypt.compare(password, res.password, (err, isMatched) => {
-          if(isMatched) {
-            return resolve(res);
-          }
-
-          reject({'status': 400});
+      return compareDate(password, res.password)
+        .then(() => {
+          return Promise.resolve(res);
+        })
+        .catch(() => {
+          return Promise.reject({
+            'status': 400
+          });
         });
-      });
     });
 };
 
@@ -177,13 +181,11 @@ userSchema.pre('save', function(next) {
 
   if(user.isModified('password')) {
 
-    /* https://www.npmjs.com/package/bcrypt#a-note-on-rounds */
-    bcrypt.genSalt(12, (saltError, salt) => {
-      bcrypt.hash(user.password, salt, (hashError, hashedPassword) => {
-        user.password = hashedPassword;
+    hashData(user.password)
+      .then(hashedPassword => {
         next();
       });
-    });
+
   } else {
     next();
   }

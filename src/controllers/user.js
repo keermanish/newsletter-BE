@@ -3,6 +3,7 @@ import path from 'path';
 import _ from 'lodash';
 
 import User from '../models/user';
+import { hashData } from '../helpers/encryption';
 
 /**
  * controller to get current user info
@@ -94,14 +95,22 @@ export const setAvatar = (req, res) => {
  */
 export const updateUser = (req, res) => {
   const userID = req.params.id;
-  const userUpdatedDate = _.omit(req.body, ['password', '_id']);
+  const userUpdatedDate = _.omit(req.body, ['_id']);
 
-  User.findByIdAndUpdate(userID, {
-      '$set': userUpdatedDate
-    }, {
-      'new': true,
-      'runValidators': true,
-      'context': 'query'
+  hashData(userUpdatedDate.password)
+    .then(hashedPassword => {
+
+      if(hashedPassword) {
+        userUpdatedDate.password = hashedPassword;
+      }
+
+      return User.findByIdAndUpdate(userID, {
+        '$set': userUpdatedDate
+      }, {
+        'new': true,
+        'runValidators': true,
+        'context': 'query'
+      });
     })
     .then(user => {
       if(!user) {
