@@ -36,6 +36,20 @@ export const isValidName = value => {
 };
 
 /**
+ * function to validate alphanumeric
+ * @param {String} value
+ * @returns {Boolean}
+ */
+export const isValidAlphanumeric = value => {
+  if(isEmpty(value)) {
+    return false;
+  }
+
+  const reg = /^[a-zA-Z0-9'.\s]+$/g;
+  return reg.test(value);
+};
+
+/**
  * function to validate phone number
  * @link https://stackoverflow.com/a/16702965
  */

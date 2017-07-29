@@ -4,6 +4,7 @@ import path from 'path';
 /* all routes */
 import todoRoutes from './todo';
 import userRoutes from './user';
+import roomRoutes from './room';
 import authenticationRoutes from './authentication';
 
 /* all common routes goes here */
@@ -33,6 +34,15 @@ routes.use('/user', authenticationRoutes);
  * GET /user/:id
  */
 routes.use('/user', isAuthorizedUser, userRoutes);
+
+/**
+ * routes to manage room
+ * GET /room/:search [all/id]
+ * POST /room/:id
+ * PUT /room/:id
+ * DELETE /room/:id
+ */
+routes.use('/room', isAuthorizedUser, roomRoutes);
 
 /**
  * all common routes goes here
