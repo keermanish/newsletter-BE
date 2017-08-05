@@ -25,7 +25,7 @@ export const userLogin = (req, res) => {
     .catch(err => {
       const errMessage = err.status === 400 ?
       'Email ID and password combination does not matched' :
-      'Please enter a valid details';
+      'Unauthorized, Please contact with admin';
 
       res.status(err.status || 404).send(errMessage);
     });

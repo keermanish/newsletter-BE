@@ -2,6 +2,7 @@
  * all validation functions goes here
  */
 
+ import moment from 'moment';
 
 /**
  * function to check whether provided value is empty or not
@@ -73,4 +74,28 @@ export const isValidEmail = value => {
 
   const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return reg.test(value);
+};
+
+/**
+ * function to validate date
+ * @param {Date/String}
+ */
+export const isValidDate = value => {
+  if(isEmpty(value)) {
+    return false;
+  }
+
+  return moment(value).isValid();
+};
+
+/**
+ * function to validate time
+ * @param {Date/String} - HH:mm
+ */
+export const isValidTime = value => {
+  if(isEmpty(value)) {
+    return false;
+  }
+
+  return moment(value, 'HH:MM').isValid();
 };

@@ -5,6 +5,7 @@ import path from 'path';
 import todoRoutes from './todo';
 import userRoutes from './user';
 import roomRoutes from './room';
+import bookRoomRoutes from './book-room';
 import authenticationRoutes from './authentication';
 
 /* all common routes goes here */
@@ -43,6 +44,15 @@ routes.use('/user', isAuthorizedUser, userRoutes);
  * DELETE /room/:id
  */
 routes.use('/room', isAuthorizedUser, roomRoutes);
+
+/**
+ * routes to manage room booking schedule
+ * GET /book-room/:search [all/id]
+ * POST /book-room/:id
+ * PUT /book-room/:id
+ * DELETE /book-room/:id
+ */
+routes.use('/book-room', isAuthorizedUser, bookRoomRoutes);
 
 /**
  * all common routes goes here

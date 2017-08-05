@@ -131,13 +131,13 @@ userSchema.statics.findUserByToken = function(token) {
   var decode = null;
 
   if(!token) {
-    return Promise.reject();
+    return Promise.reject({'status': 401});
   }
 
   try {
     decode = jwt.verify(token, config.AUTH_KEY);
   } catch (e) {
-    return Promise.reject({'status': 400});
+    return Promise.reject({'status': 401});
   }
 
   return user.findOne({'_id': decode._id});

@@ -19,7 +19,7 @@ export const isAuthorizedUser = (req, res, next) => {
       next();
     })
     .catch(err => {
-      res.status(err.status || 401).send(err);
+      res.status(401).send('Unauthorized, Please login');
     });
 };
 
@@ -39,6 +39,6 @@ export const verifyAgainstDB = (req, res, next) => {
       next();
     })
     .catch(err => {
-      res.status(401).send(err);
+      res.status(401).send('Unauthorized, Please login');
     });
 };
