@@ -183,6 +183,8 @@ userSchema.pre('save', function(next) {
 
     hashData(user.password)
       .then(hashedPassword => {
+        user.password = hashedPassword;
+
         next();
       });
 
