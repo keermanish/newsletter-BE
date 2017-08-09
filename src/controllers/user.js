@@ -3,6 +3,7 @@ import path from 'path';
 import _ from 'lodash';
 
 import User from '../models/user';
+import config from '../config/config';
 import { hashData } from '../helpers/encryption';
 
 /**
@@ -69,7 +70,7 @@ export const setAvatar = (req, res) => {
 
   User.findByIdAndUpdate(req.user._id, {
       '$set': {
-        'avatar': `/uploads/avatar/${req.file.filename}`
+        'avatar': `${config.API_URL}/uploads/avatar/${req.file.filename}`
       }
     }, {
       'new': true
