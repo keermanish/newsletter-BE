@@ -1,15 +1,23 @@
 import applicationPrivateConfig from './config.json';
 
 const applicationPublicConfig = {
-  "development": {
+  'development': {
     "API_URL": "http://localhost:3000"
   },
-  "stage": {
+  'stage': {
     "API_URL": "http://stage:3000" // Please change me later
   },
-  "production": {
+  'production': {
     "API_URL": "http://production:3000" // Please change me later
   }
+};
+
+/**
+ * common configuration
+ * same across all environment
+ */
+const commonConfigAcrossAllEnv = {
+  'OTP_EXPIRY_TIME': 2 /* in hours */
 };
 
 /**
@@ -25,6 +33,6 @@ const runtimePrivateConfig = applicationPrivateConfig[process.env.NODE_ENV || 'd
 const runtimePublicConfig = applicationPublicConfig[process.env.NODE_ENV || 'development'];
 
 /* combine both */
-const config = Object.assign({}, runtimePrivateConfig, runtimePublicConfig);
+const config = Object.assign({}, runtimePrivateConfig, runtimePublicConfig, commonConfigAcrossAllEnv);
 
 export default config;
