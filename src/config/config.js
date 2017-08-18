@@ -5,7 +5,7 @@ const applicationPublicConfig = {
     "API_URL": "http://localhost:3000"
   },
   "stage": {
-    "API_URL": "http://stage:3000" // Please change me later
+    "API_URL": "http://10.12.168.10:3000" // Please change me later
   },
   "production": {
     "API_URL": "http://production:3000" // Please change me later
