@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import uniqueValidator from 'mongoose-unique-validator';
 import _ from 'lodash';
+import moment from 'moment';
+import otpGenerator from 'otp-generator';
 
 import config from '../config/config';
 import {
@@ -91,6 +93,14 @@ const userSchema = new mongoose.Schema({
   'doj': {
     'type': Date,
     'required': [true, 'Please provide date of joining']
+  },
+  'otp': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
+  'otpExpire': {
+    'type': Date
   }
 });
 
@@ -100,7 +110,7 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function() {
   const user = this;
   const userObject = user.toObject();
-  const skipFields = ['password'];
+  const skipFields = ['password', 'otp', 'otpExpire', '__v'];
 
   return _.omit(userObject, skipFields);
 };
@@ -118,6 +128,45 @@ userSchema.methods.generateAuthToken = function() {
   const token = jwt.sign(tokenData, config.AUTH_KEY).toString();
 
   return Promise.resolve(token);
+};
+
+/**
+ * instance method to generate otp
+ * token has expiration in hours
+ * function - required 'this'
+ */
+userSchema.methods.generateOTP = function() {
+  const user = this;
+
+  const otp = otpGenerator.generate(8, {
+    'upperCase': false,
+    'specialChars': false
+  });
+
+  user.otp = otp;
+  user.otpExpire = moment().add(config.OTP_EXPIRY_TIME, 'h').toDate();
+
+  return user.save();
+};
+
+/**
+ * instance method to verify otp and its expiry
+ * if otp is valid then reset the password
+ * function - required 'this'
+ */
+userSchema.methods.verifyOTPAndResetPassword = function(providedOTP, newPassword) {
+  const user = this;
+
+  /* compare otp and verify otp expiry */
+  if(user.otp && user.otp === providedOTP && moment().diff(moment(user.otpExpire)) < 0) {
+    user.otp = '';
+    user.otpExpire = moment().subtract(config.OTP_EXPIRY_TIME, 'h').toDate();
+    user.password = newPassword;
+
+    return user.save();
+  } else {
+    return Promise.reject({'status': 400});
+  }
 };
 
 /**
