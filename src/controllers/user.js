@@ -98,7 +98,9 @@ export const updateUser = (req, res) => {
   const userID = req.params.id;
   const userUpdatedDate = _.omit(req.body, ['_id']);
 
-  hashData(userUpdatedDate.credentials.password)
+  const password = userUpdatedDate.credentials ? userUpdatedDate.credentials.password : null;
+
+  hashData(password)
     .then(hashedPassword => {
 
       if(hashedPassword) {
