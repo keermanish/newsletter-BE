@@ -2,6 +2,8 @@ import moment from 'moment';
 
 import BookRoom from '../models/book-room';
 
+import { USER_FIELDS_TO_POPULATE } from '../config/const';
+
 /**
  * controller to get all/specific schedules
  * GET /book-room/:search [all/id]
@@ -12,7 +14,7 @@ export const getAllBookedRoomSchedule = (req, res) => {
   };
 
   BookRoom.find(search)
-    .populate('bookBy')
+    .populate('bookBy', USER_FIELDS_TO_POPULATE)
     .populate('location')
     .then(bookedRooms => {
       res.status(200).send(bookedRooms);
@@ -42,7 +44,7 @@ export const addSchedule = (req, res) => {
 
   roomToBeBooked.save()
     .then(bookedRoom => {
-      return BookRoom.findById(bookedRoom._id).populate('bookBy').populate('location');
+      return BookRoom.findById(bookedRoom._id).populate('bookBy', USER_FIELDS_TO_POPULATE).populate('location');
     })
     .then(bookedRooms => {
       res.status(200).send(bookedRooms);
@@ -64,7 +66,7 @@ export const updateSchedule = (req, res) => {
     'runValidators': true,
     'context': 'query'
   })
-    .populate('bookBy')
+    .populate('bookBy', USER_FIELDS_TO_POPULATE)
     .populate('location')
     .then(updatedSchedule => {
       res.status(200).send(updatedSchedule);

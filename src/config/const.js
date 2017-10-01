@@ -1,0 +1,1 @@
+export const USER_FIELDS_TO_POPULATE = '_id name email phone designation';

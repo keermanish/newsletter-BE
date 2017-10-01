@@ -73,7 +73,6 @@ const bookRoomSchema = new mongoose.Schema({
   }
 });
 
-
 const BookRoom = mongoose.model('BookRoom', bookRoomSchema);
 
 export default BookRoom;
