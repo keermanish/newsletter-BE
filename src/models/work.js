@@ -4,6 +4,8 @@ import {
   isValidDate
 } from '../helpers/validation';
 
+import { ALLOWED_USER_DOMAINS } from '../config/const';
+
 const workSchema = new mongoose.Schema({
   'title': {
     'type': String,
@@ -76,7 +78,7 @@ const workSchema = new mongoose.Schema({
     'type': {
       'type': String,
       'enum': {
-        'values': ['UX', 'VD', 'FE', 'BE', 'PM', 'BA'],
+        'values': ALLOWED_USER_DOMAINS,
         'message': 'Please provide valid vacancy type'
       },
       'required': [true, 'Please provide type of vacancy']

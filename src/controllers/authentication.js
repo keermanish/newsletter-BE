@@ -44,7 +44,9 @@ export const createUser = (req, res) => {
     'password': req.body.credentials.password,
     'dob': req.body.dob ? moment(req.body.dob).toDate() : null,
     'doj': req.body.doj ? moment(req.body.doj).toDate() : moment().toDate(),
-    'role': req.body.role || 'normal'
+    'role': req.body.role || 'normal',
+    'previousExp': req.body.previousExp,
+    'domain': req.body.domain
   });
 
   user.save()

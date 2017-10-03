@@ -12,6 +12,8 @@ import {
   compareDate
 } from '../helpers/encryption';
 
+import { ALLOWED_USER_DOMAINS } from '../config/const';
+
 import {
   isValidName,
   isValidEmail,
@@ -101,6 +103,18 @@ const userSchema = new mongoose.Schema({
   },
   'otpExpire': {
     'type': Date
+  },
+  'previousExp': {
+    'type': Number,
+    'required': [true, 'Please enter your previous experience'],
+  },
+  'domain': {
+    'type': String,
+    'enum': {
+      'values': ALLOWED_USER_DOMAINS,
+      'message': 'Please provide valid domain'
+    },
+    'required': [true, 'Please enter your domain'],
   }
 });
 
