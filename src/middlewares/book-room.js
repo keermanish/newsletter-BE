@@ -88,7 +88,9 @@ export const checkRoomAvailablity = (req, res, next) => {
 
           /* slots are not available */
           if(alreadyBookedSlotsWithDate.length) {
-            return res.status(400).json(alreadyBookedSlotsWithDate);
+            return res.status(400).json({
+              'alreadyBookedSlots': alreadyBookedSlotsWithDate
+            });
           }
         }
 
