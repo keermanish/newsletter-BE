@@ -6,6 +6,7 @@ import todoRoutes from './todo';
 import userRoutes from './user';
 import roomRoutes from './room';
 import workRoutes from './work';
+import eventRoutes from './event';
 import bookRoomRoutes from './book-room';
 import authenticationRoutes from './authentication';
 
@@ -54,6 +55,15 @@ routes.use('/room', isAuthorizedUser, roomRoutes);
  * DELETE /book-room/:id
  */
 routes.use('/book-room', isAuthorizedUser, bookRoomRoutes);
+
+/**
+ * routes to manage events
+ * GET /event/:search [all/id]
+ * POST /event/new
+ * PUT /event/:id
+ * DELETE /event/:id
+ */
+routes.use('/event', isAuthorizedUser, eventRoutes);
 
 /**
  * routes to manage work(FI/RFP)
