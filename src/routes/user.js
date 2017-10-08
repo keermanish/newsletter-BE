@@ -7,12 +7,9 @@ import {
   setAvatar,
   updateUser,
   getUserByID,
-  getUserList
+  getUserList,
+  logoutCurrentUser
 } from '../controllers/user';
-
-import {
-  verifyAgainstDB
-} from '../middlewares/authentication';
 
 import { avatarUpload } from '../config/upload';
 
@@ -23,7 +20,7 @@ const userRoutes = express.Router();
  * This imp since token might does not have latest user info
  * GET /user/me
  */
-userRoutes.get('/me', verifyAgainstDB, getUser);
+userRoutes.get('/me', getUser);
 
 /**
  * route to get specific user's info
@@ -48,5 +45,11 @@ userRoutes.put('/:id', updateUser);
  * POST /user/avatar
  */
 userRoutes.post('/avatar', avatarUpload, setAvatar);
+
+/**
+ * route to logout current user
+ * DELETE /user/logout
+ */
+userRoutes.delete('/logout', logoutCurrentUser);
 
 export default userRoutes;

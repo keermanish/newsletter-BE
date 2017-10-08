@@ -50,11 +50,8 @@ export const createUser = (req, res) => {
   });
 
   user.save()
-    .then(() => {
-      return user.generateAuthToken();
-    })
-    .then(token => {
-      res.header('x-auth', token).send(user);
+    .then(savedUser => {
+      return res.status(200).send(savedUser);
     })
     .catch(err => {
       if(err.message) {

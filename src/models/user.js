@@ -7,12 +7,16 @@ import moment from 'moment';
 import otpGenerator from 'otp-generator';
 
 import config from '../config/config';
+import redisClient from '../config/redis';
 import {
   hashData,
   compareDate
 } from '../helpers/encryption';
 
-import { ALLOWED_USER_DOMAINS } from '../config/const';
+import {
+  ALLOWED_USER_DOMAINS,
+  AVOID_FIELDS_IN_RESPONSE
+} from '../config/const';
 
 import {
   isValidName,
@@ -124,9 +128,8 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function() {
   const user = this;
   const userObject = user.toObject();
-  const skipFields = ['password', 'otp', 'otpExpire', '__v'];
 
-  return _.omit(userObject, skipFields);
+  return _.omit(userObject, AVOID_FIELDS_IN_RESPONSE);
 };
 
 /**
@@ -139,9 +142,21 @@ userSchema.methods.generateAuthToken = function() {
   const tokenData = Object.assign({
     'access': 'auth'
   }, user.toObject());
+
+  /* create token */
   const token = jwt.sign(tokenData, config.AUTH_KEY).toString();
 
-  return Promise.resolve(token);
+  return new Promise((resolve, reject) => {
+
+    /* put token into redis */
+    redisClient.sadd(`auth:${user._id}`, token, err => {
+      if(err) {
+        reject();
+      }
+
+      return resolve(token);
+    });
+  });
 };
 
 /**
@@ -190,7 +205,6 @@ userSchema.methods.verifyOTPAndResetPassword = function(providedOTP, newPassword
  * @param {String} teken [user token]
  */
 userSchema.statics.findUserByToken = function(token) {
-  const user = this;
   var decode = null;
 
   if(!token) {
@@ -198,12 +212,23 @@ userSchema.statics.findUserByToken = function(token) {
   }
 
   try {
+
+    /* check whether token is valid or not */
     decode = jwt.verify(token, config.AUTH_KEY);
   } catch (e) {
     return Promise.reject({'status': 401});
   }
 
-  return user.findOne({'_id': decode._id});
+  /* check whether token is present in redis or not */
+  return new Promise((resolve, reject) => {
+    redisClient.sismember(`auth:${decode._id}`, token, (err, data) => {
+      if(err) {
+        reject();
+      }
+
+      resolve(_.omit(decode, AVOID_FIELDS_IN_RESPONSE));
+    });
+  });
 };
 
 /**

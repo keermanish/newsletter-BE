@@ -17,7 +17,9 @@ const applicationPublicConfig = {
  * same across all environment
  */
 const commonConfigAcrossAllEnv = {
-  'OTP_EXPIRY_TIME': 2 /* in hours */
+  'OTP_EXPIRY_TIME': 2, /* in hours */
+
+  'REDIS_KEY': 'newsletter:' /* unique seperator to distinguish redis key */
 };
 
 /**
