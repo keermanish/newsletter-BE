@@ -61,3 +61,4 @@ typings/
 /dist
 /src/config/config.json
 /uploads
+*.rdb

@@ -23,7 +23,6 @@ export const getRoom = (req, res) => {
  * POST /room/new
  */
 export const addNewRoom = (req, res) => {
-  console.log('req.body', req.body);
   const room = new Room({
     'name': req.body.name,
     'location': req.body.location,

@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import User from '../models/user';
 import config from '../config/config';
+import redisClient from '../config/redis';
 import { hashData } from '../helpers/encryption';
 
 /**
@@ -96,19 +97,30 @@ export const setAvatar = (req, res) => {
  */
 export const updateUser = (req, res) => {
   const userID = req.params.id;
-  const userUpdatedDate = _.omit(req.body, ['_id']);
+  const userDataToBeUpdated = _.omit(req.body, ['_id']);
 
-  const password = userUpdatedDate.credentials ? userUpdatedDate.credentials.password : null;
+  const password = userDataToBeUpdated.credentials ? userDataToBeUpdated.credentials.password : null;
 
   hashData(password)
     .then(hashedPassword => {
+      return new Promise((resolve, reject) => {
+        if(hashedPassword) {
+          userDataToBeUpdated.password = hashedPassword;
+        }
 
-      if(hashedPassword) {
-        userUpdatedDate.password = hashedPassword;
-      }
-
+        if(userDataToBeUpdated.status && userDataToBeUpdated.status !== 'active') {
+          /* for key operations we need to add prefix manually */
+          redisClient.del(`auth:${userID}`, (err) => {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    })
+    .then(() => {
       return User.findByIdAndUpdate(userID, {
-        '$set': userUpdatedDate
+        '$set': userDataToBeUpdated
       }, {
         'new': true,
         'runValidators': true,
@@ -129,4 +141,20 @@ export const updateUser = (req, res) => {
         res.status(err.status || 400).send('Unable to register, Please check your details');
       }
     });
+};
+
+/**
+ * controller to logout current user
+ * DELETE /user/logout
+ */
+export const logoutCurrentUser = (req, res) => {
+  const token = req.header('x-auth');
+
+  redisClient.srem(`auth:${req.user._id}`, [token], err => {
+    if(err) {
+      res.status(400).send('Unable to logout');
+    }
+
+    res.status(200).send();
+  });
 };
