@@ -7,10 +7,10 @@ import {
 import { ALLOWED_USER_DOMAINS } from '../config/const';
 
 const workSchema = new mongoose.Schema({
-  'title': {
+  'name': {
     'type': String,
     'trim': true,
-    'required': [true, 'Please provide work title']
+    'required': [true, 'Please provide work name']
   },
   'description': {
     'type': String,
@@ -20,7 +20,7 @@ const workSchema = new mongoose.Schema({
     'type': String,
     'trim': true
   },
-  'typeOfWork': {
+  'projectType': {
     'type': String,
     'trim': true,
     'enum': {
@@ -30,41 +30,17 @@ const workSchema = new mongoose.Schema({
     'required': [true, 'Please provide type of work']
   },
   'estimation': {
-    'type': {
-      'type': String,
-      'enum': {
-        'values': ['Daily Hours', 'Total Hours', 'Total Days'],
-        'message': 'Please provide valid estimation type'
-      },
-      'required': [true, 'Please provide type of estimation']
-    },
-    'value': {
-      'type': String
-    },
-    'startDate': {
-      'type': Date,
-      'validate': {
-        'isAsync': false,
-        'validator': isValidDate,
-        'message': 'Please enter a valid estimation start date'
-      }
-    },
-    'endDate': {
-      'type': Date,
-      'validate': {
-        'isAsync': false,
-        'validator': isValidDate,
-        'message': 'Please enter a valid estimation end date'
-      }
-    }
+    'type': String,
+    'trim': true,
+    'required': [true, 'Please provide estimation of the work']
   },
-  'spoc': {
+  'contactPerson': {
     'type': mongoose.Schema.Types.ObjectId,
     'ref': 'User',
-    'required': [true, 'Please provide mention SPOC name']
+    'required': [true, 'Please provide mention contact person']
   },
-  'participants': [{
-    'participant': {
+  'members': [{
+    'member': {
       'type': mongoose.Schema.Types.ObjectId,
       'ref': 'User',
       'required': [true, 'Please provide the participant details']
@@ -74,8 +50,8 @@ const workSchema = new mongoose.Schema({
       'default': 0
     }
   }],
-  'vacancy': [{
-    'type': {
+  'vacancies': [{
+    'domain': {
       'type': String,
       'enum': {
         'values': ALLOWED_USER_DOMAINS,
@@ -83,9 +59,9 @@ const workSchema = new mongoose.Schema({
       },
       'required': [true, 'Please provide type of vacancy']
     },
-    'availablity': {
+    'count': {
       'type': Number,
-      'required': [true, 'Please provide availablity']
+      'required': [true, 'Please provide availablity count']
     }
   }]
 });

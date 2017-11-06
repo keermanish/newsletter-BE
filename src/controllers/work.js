@@ -4,13 +4,13 @@ import { USER_FIELDS_TO_POPULATE } from '../config/const';
 
 /**
  * controller to get all/specific work
- * GET /work/:typeOfWork/:search
- * typeOfWork: FI/RFP
+ * GET /work/:projectType/:search
+ * projectType: FI/RFP
  * search all/id
  */
 export const getWork = (req, res) => {
   const search = {
-    'typeOfWork': req.params.typeOfWork
+    'projectType': req.params.projectType
   };
 
   if(req.params.search && req.params.search !== 'all') {
@@ -18,8 +18,8 @@ export const getWork = (req, res) => {
   }
 
   Work.find(search)
-    .populate('spoc', USER_FIELDS_TO_POPULATE)
-    .populate('participants.participant', USER_FIELDS_TO_POPULATE)
+    .populate('contactPerson', USER_FIELDS_TO_POPULATE)
+    .populate('members.member', USER_FIELDS_TO_POPULATE)
     .then(works => {
       res.status(200).send(works);
     })
@@ -34,19 +34,19 @@ export const getWork = (req, res) => {
  */
 export const addWork = (req, res) => {
   const work = new Work({
-    'title': req.body.title,
+    'name': req.body.name,
     'description': req.body.description,
     'technology': req.body.technology,
-    'typeOfWork': req.body.typeOfWork,
+    'projectType': req.body.projectType,
     'estimation': req.body.estimation,
-    'spoc': req.body.spoc,
-    'participants': req.body.participants,
+    'contactPerson': req.body.contactPerson,
+    'members': req.body.members,
     'vacancy': req.body.vacancy
   });
 
   work.save()
     .then(savedWork => {
-      return Work.findById(savedWork._id).populate('spoc', USER_FIELDS_TO_POPULATE).populate('participants.participant', USER_FIELDS_TO_POPULATE);
+      return Work.findById(savedWork._id).populate('contactPerson', USER_FIELDS_TO_POPULATE).populate('members.member', USER_FIELDS_TO_POPULATE);
     })
     .then(savedWork => {
       res.status(200).send(savedWork);
@@ -68,8 +68,8 @@ export const updateWork = (req, res) => {
     'runValidators': true,
     'context': 'query'
   })
-    .populate('spoc', USER_FIELDS_TO_POPULATE)
-    .populate('participants.participant', USER_FIELDS_TO_POPULATE)
+    .populate('contactPerson', USER_FIELDS_TO_POPULATE)
+    .populate('members.member', USER_FIELDS_TO_POPULATE)
     .then(updatedWork => {
       res.status(200).send(updatedWork);
     })
