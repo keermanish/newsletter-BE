@@ -9,12 +9,14 @@ import { USER_FIELDS_TO_POPULATE } from '../config/const';
  * search all/id
  */
 export const getWork = (req, res) => {
-  const search = {
-    'projectType': req.params.projectType
-  };
+  const search = {};
 
   if(req.params.search && req.params.search !== 'all') {
     search._id = req.params.search;
+  }
+
+  if(req.params.projectType && req.params.projectType !== 'all') {
+    search.projectType = req.params.projectType;
   }
 
   Work.find(search)
