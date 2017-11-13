@@ -17,7 +17,7 @@ const workSchema = new mongoose.Schema({
     'trim': true
   },
   'technology': {
-    'type': String,
+    'type': [String],
     'trim': true
   },
   'projectType': {
