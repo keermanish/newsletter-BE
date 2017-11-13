@@ -11,11 +11,11 @@ const workRoutes = express.Router();
 
 /**
  * route to get all/specific work
- * GET /work/:typeOfWork/:search
- * typeOfWork: FI/RFP
+ * GET /work/:projectType/:search
+ * projectType: FI/RFP
  * search all/id
  */
-workRoutes.get('/:typeOfWork/:search', getWork);
+workRoutes.get('/:projectType/:search', getWork);
 
 /**
  * route to create new work

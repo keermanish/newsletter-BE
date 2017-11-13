@@ -41,7 +41,7 @@ export const addWork = (req, res) => {
     'estimation': req.body.estimation,
     'contactPerson': req.body.contactPerson,
     'members': req.body.members,
-    'vacancy': req.body.vacancy
+    'vacancies': req.body.vacancies
   });
 
   work.save()
