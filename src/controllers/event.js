@@ -40,7 +40,7 @@ const checkSlots = (req, res) => {
 
   /* skip if we find any invalid slot */
   if(isInvalidTimeCombination) {
-    return res.status(400).send(`Slot ${isInvalidTimeCombination}, Please provide valid start and end time`);
+    //return res.status(400).send(`Slot ${isInvalidTimeCombination}, Please provide valid start and end time`);
   }
 
   /* sort by ASC */

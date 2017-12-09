@@ -16,15 +16,17 @@ const workSchema = new mongoose.Schema({
     'type': String,
     'trim': true
   },
-  'technology': {
-    'type': [String],
-    'trim': true
-  },
+  'technologies': [{
+    'technology': {
+      'type': String,
+      'required': [true, 'Please provide the participant details']
+    }
+  }],
   'projectType': {
     'type': String,
     'trim': true,
     'enum': {
-      'values': ['FI', 'RFP'],
+      'values': ['FI', 'RFP', 'POC'],
       'message': 'Please provide valid work type'
     },
     'required': [true, 'Please provide type of work']
@@ -41,8 +43,7 @@ const workSchema = new mongoose.Schema({
   },
   'members': [{
     'member': {
-      'type': mongoose.Schema.Types.ObjectId,
-      'ref': 'User',
+      'type': String,
       'required': [true, 'Please provide the participant details']
     },
     'timeSpend': {

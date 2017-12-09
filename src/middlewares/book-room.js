@@ -41,22 +41,24 @@ export const checkRoomAvailablity = (req, res, next) => {
 
     /* skip if we find any invalid slot */
     if(isInvalidTimeCombination) {
-      return res.status(400).send(`Slot ${isInvalidTimeCombination}, Please provide valid start and end time`);
+      //return res.status(400).send(`Slot ${isInvalidTimeCombination}, Please provide valid start and end time`);
     }
 
     /* sort by ASC */
     slots = _.sortBy(slots, (slot) => slot.fromTime);
-
+    let meetingId = ((res.req.headers.referer).indexOf('edit/') !== -1) ? (res.req.headers.referer).split('edit/')[1] : undefined;
     BookRoom.find({
+      '_id': { $ne: meetingId },
       'location': req.body.location,
-      'slots.fromTime': {
-        '$gte': slots[0].fromTime /* search boundary - start time */
-      },
-      'slots.toTime': {
-        '$lte': slots[slots.length - 1].toTime /* search boundary - end time */
-      }
+      // 'slots.fromTime': {
+      //   '$gte': slots[0].fromTime /* search boundary - start time */
+      // },
+      // 'slots.toTime': {
+      //   '$lte': slots[slots.length - 1].toTime /* search boundary - end time */
+      // }
     })
-      .then(bookedRooms => {
+    .populate('bookBy')
+      .then(bookedRooms => {console.log(bookedRooms);
         if(Array.isArray(bookedRooms)) {
 
           /* array to collect all booked slots */
@@ -70,14 +72,18 @@ export const checkRoomAvailablity = (req, res, next) => {
 
               /* loop through slots of already booked room */
               return _.find(bookedRoom.slots, bookedSlot => {
+                let availablity;
 
-                /* check slot availablity */
-                const availablity = slotToBeBooked.fromTime >= bookedSlot.fromTime && slotToBeBooked.fromTime < bookedSlot.toTime;
+                if(bookedSlot.toDate <= slotToBeBooked.fromDate && slotToBeBooked.toDate >= bookedSlot.fromDate) {
+                  /* check slot availablity */
+                  availablity = (bookedSlot.toTime <= slotToBeBooked.fromTime && slotToBeBooked.toTime >= bookedSlot.fromTime);
+                }
 
                 if(availablity) {
                   alreadyBookedSlotsWithDate.push({
                     'bookedDate': moment(bookedSlot.fromDate).format('YYYY/MM/DD'),
-                    'bookedSlots': bookedSlot
+                    'bookedSlots': bookedSlot,
+                    'bookedBy': bookedRoom.bookBy
                   });
                 }
 

@@ -21,7 +21,6 @@ export const getWork = (req, res) => {
 
   Work.find(search)
     .populate('contactPerson', USER_FIELDS_TO_POPULATE)
-    .populate('members.member', USER_FIELDS_TO_POPULATE)
     .then(works => {
       res.status(200).send(works);
     })
@@ -38,7 +37,7 @@ export const addWork = (req, res) => {
   const work = new Work({
     'name': req.body.name,
     'description': req.body.description,
-    'technology': req.body.technology,
+    'technologies': req.body.technologies,
     'projectType': req.body.projectType,
     'estimation': req.body.estimation,
     'contactPerson': req.body.contactPerson,
