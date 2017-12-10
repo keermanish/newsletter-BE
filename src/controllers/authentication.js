@@ -51,7 +51,13 @@ export const createUser = (req, res) => {
 
   user.save()
     .then(savedUser => {
-      return res.status(200).send(savedUser);
+      if(!savedUser) {
+        res.status(400).send('Unable to register, Please check your details');
+      }
+      return savedUser.generateAuthToken();
+    })
+    .then(token => {
+      res.header('x-auth', token).send(user);
     })
     .catch(err => {
       if(err.message) {
