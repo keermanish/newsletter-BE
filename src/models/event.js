@@ -5,6 +5,8 @@ import {
   isValidAlphanumeric
 } from '../helpers/validation';
 
+// @TODO - add 'image' field in this schema
+
 const eventSchema = new mongoose.Schema({
   'title': {
     'type': String,
@@ -22,6 +24,16 @@ const eventSchema = new mongoose.Schema({
   'location': {
     'type': String,
     'required': [true, 'Please provied event venue']
+  },
+  'invitees': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
+  'notes': {
+    'type': String,
+    'trim': true,
+    'default': ''
   },
   'slots': [{
     'fromDate': {

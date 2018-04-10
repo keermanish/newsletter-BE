@@ -86,7 +86,9 @@ export const addEvent = (req, res) => {
     'organiser': req.user._id,
     'location': req.body.location,
     'slots': req.body.slots,
-    'description': req.body.description
+    'description': req.body.description,
+    'invitees': req.body.invitees,
+    'notes': req.body.notes
   });
 
   event.save()

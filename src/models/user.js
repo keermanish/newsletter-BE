@@ -108,6 +108,21 @@ const userSchema = new mongoose.Schema({
   'otpExpire': {
     'type': Date
   },
+  'skills': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
+  'visa': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
+  'about': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
   'previousExp': {
     'type': Number,
     'required': [true, 'Please enter your previous experience'],
@@ -286,6 +301,7 @@ userSchema.pre('save', function(next) {
  * {PATH} {VALUE} {TYPE}
  */
 userSchema.plugin(uniqueValidator, { 'message': '{PATH}' });
+
 const User = mongoose.model('User', userSchema);
 
 export default User;
