@@ -1,8 +1,11 @@
 import moment from 'moment';
 import _ from 'lodash';
+import path from 'path';
+import fs from 'fs';
 
 import Event from '../models/event';
 
+import config from '../config/config';
 import { USER_FIELDS_TO_POPULATE } from '../config/const';
 
 /**
@@ -100,6 +103,35 @@ export const addEvent = (req, res) => {
     })
     .catch(err => {
       res.status(400).send(err);
+    });
+};
+
+/**
+ * controller to set event pic
+ * once image store successfully then delete previous eventPic
+ * POST /event/pic
+ */
+export const setEventPic = (req, res) => {
+  const oldEventPicPath = req.event.eventPic;
+
+  Event.findByIdAndUpdate(req.event._id, {
+      '$set': {
+        'eventPic': `${config.API_URL}/uploads/eventPic/${req.file.filename}`
+      }
+    }, {
+      'new': true
+    })
+    .then(event => {
+
+      /* check for old eventPic */
+      if(oldEventPicPath) {
+        fs.unlink(path.join(__dirname, './../../', oldEventPicPath));
+      }
+
+      res.send(event);
+    })
+    .catch(err => {
+      res.status(400).send('Unable to set profile pic, Please try again');
     });
 };
 

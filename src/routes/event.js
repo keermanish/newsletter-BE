@@ -4,8 +4,11 @@ import {
   getAllEvents,
   addEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  setEventPic
 } from '../controllers/event';
+
+import { eventPicUpload } from '../config/upload';
 
 const eventRoutes = express.Router();
 
@@ -26,6 +29,12 @@ eventRoutes.post('/new', addEvent);
  * PUT /event/:id
  */
 eventRoutes.put('/:id', updateEvent);
+
+/**
+ * route to set event avatar
+ * POST /event/avatar
+ */
+eventRoutes.post('/pic', eventPicUpload, setEventPic);
 
 /**
  * controller to remove event info
