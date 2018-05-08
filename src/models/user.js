@@ -240,19 +240,10 @@ userSchema.statics.findUserByToken = function(token) {
     return Promise.reject({'status': 401});
   }
 
-  return user.findOne({
+  return user
+    .findOne({
       _id: decode._id,
-      status: 'Active'
-    })
-    .then(data => {
-      if (!data) {
-        return Promise.reject({'status': 401});
-      }
-
-      return _.omit(decode, AVOID_FIELDS_IN_RESPONSE);
-    })
-    .catch(err => {
-      return Promise.reject({'status': 401});
+      status: 'active'
     });
 };
 
