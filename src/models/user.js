@@ -7,7 +7,7 @@ import moment from 'moment';
 import otpGenerator from 'otp-generator';
 
 import config from '../config/config';
-import redisClient from '../config/redis';
+// import redisClient from '../config/redis';
 import {
   hashData,
   compareDate
@@ -164,13 +164,14 @@ userSchema.methods.generateAuthToken = function() {
   return new Promise((resolve, reject) => {
 
     /* put token into redis */
-    redisClient.sadd(`auth:${user._id}`, token, err => {
-      if(err) {
-        reject();
-      }
+    // redisClient.sadd(`auth:${user._id}`, token, err => {
+    //   if(err) {
+    //     reject();
+    //   }
 
-      return resolve(token);
-    });
+    //   return resolve(token);
+    // });
+    resolve(token);
   });
 };
 
@@ -221,6 +222,7 @@ userSchema.methods.verifyOTPAndResetPassword = function(providedOTP, newPassword
  */
 userSchema.statics.findUserByToken = function(token) {
   var decode = null;
+  var user = this;
 
   if(!token) {
     return Promise.reject({'status': 401});
@@ -230,20 +232,28 @@ userSchema.statics.findUserByToken = function(token) {
 
     /* check whether token is valid or not */
     decode = jwt.verify(token, config.AUTH_KEY);
+
+    if (!decode) {
+      throw Error('401');
+    }
   } catch (e) {
     return Promise.reject({'status': 401});
   }
 
-  /* check whether token is present in redis or not */
-  return new Promise((resolve, reject) => {
-    redisClient.sismember(`auth:${decode._id}`, token, (err, data) => {
-      if(err) {
-        reject();
+  return user.findOne({
+      _id: decode._id,
+      status: 'Active'
+    })
+    .then(data => {
+      if (!data) {
+        return Promise.reject({'status': 401});
       }
 
-      resolve(_.omit(decode, AVOID_FIELDS_IN_RESPONSE));
+      return _.omit(decode, AVOID_FIELDS_IN_RESPONSE);
+    })
+    .catch(err => {
+      return Promise.reject({'status': 401});
     });
-  });
 };
 
 /**

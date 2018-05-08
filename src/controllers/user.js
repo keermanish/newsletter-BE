@@ -110,9 +110,11 @@ export const updateUser = (req, res) => {
 
         if(userDataToBeUpdated.status && userDataToBeUpdated.status !== 'active') {
           /* for key operations we need to add prefix manually */
-          redisClient.del(`auth:${userID}`, (err) => {
-            resolve();
-          });
+          // redisClient.del(`auth:${userID}`, (err) => {
+          //   resolve();
+          // });
+
+          resolve();
         } else {
           resolve();
         }
@@ -150,11 +152,13 @@ export const updateUser = (req, res) => {
 export const logoutCurrentUser = (req, res) => {
   const token = req.header('x-auth');
 
-  redisClient.srem(`auth:${req.user._id}`, [token], err => {
-    if(err) {
-      res.status(400).send('Unable to logout');
-    }
+  // redisClient.srem(`auth:${req.user._id}`, [token], err => {
+  //   if(err) {
+  //     res.status(400).send('Unable to logout');
+  //   }
 
-    res.status(200).send();
-  });
+  //   res.status(200).send();
+  // });
+
+  res.status(200).send();
 };

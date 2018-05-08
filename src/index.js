@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import config from './config/config';
-import redisClient from './config/redis';
+// import redisClient from './config/redis';
 import routes from './routes/';
 import dbConnection from './config/db';
 import { corsOptions } from './config/cors';
