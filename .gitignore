@@ -59,6 +59,5 @@ typings/
 
 # project specific folders/files
 /dist
-/src/config/config.json
 /uploads
 *.rdb

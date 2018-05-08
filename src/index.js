@@ -36,5 +36,5 @@ app.use(bodyParser.json());
 app.use(routes);
 
 app.listen(port, () => {
-  console.log(`App listen on ${port}`);
+  console.log(`App listen on ${port}${JSON.stringify(config)}`);
 });

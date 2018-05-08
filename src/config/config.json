@@ -1,0 +1,17 @@
+{
+  "development": {
+    "PORT": 3000,
+    "DB_URL": "mongodb://makeerd:deloitte2018#3@ds117730.mlab.com:17730/newsletter-be",
+    "AUTH_KEY": "NEWSLETTER2017#DDDEVELOP"
+  },
+  "stage": {
+    "PORT": 3000,
+    "DB_URL": "mongodb://makeerd:deloitte2018#3@ds117730.mlab.com:17730/newsletter-be",
+    "AUTH_KEY": "NEWSLETTER2017#DDSTAGE"
+  },
+  "production": {
+    "PORT": 3000,
+    "DB_URL": "mongodb://makeerd:deloitte2018#3@ds117730.mlab.com:17730/newsletter-be",
+    "AUTH_KEY": "NEWSLETTER2017#DDPRODUCTION"
+  }
+}

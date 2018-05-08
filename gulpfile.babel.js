@@ -9,7 +9,8 @@ import babel from 'gulp-babel';
 const path = {
   'entry': './dist/index.js',
   'src': ['./src/**/*.js'],
-  'dist': './dist'
+  'dist': './dist',
+  'prod': './prod',
 };
 
 /* default/local mode - gulp */
@@ -19,7 +20,7 @@ gulp.task('default', ['set-dev-node-env'], cb => {
 
 /* production mode - gulp prod */
 gulp.task('prod', ['set-prod-node-env'], cb => {
-  run('build', 'watch', cb);
+  run('clean', 'babel', cb);
 });
 
 /* stage mode - gulp prod */
@@ -85,7 +86,7 @@ gulp.task('babel', () => {
         ['inline-json-import', {}]
       ]
     }))
-    .pipe(gulp.dest(path.dist));
+    .pipe(gulp.dest(process.env.NODE_ENV === 'production' ? path.prod : path.dist));
 });
 
 /* starts a new server instance */

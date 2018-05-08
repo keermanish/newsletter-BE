@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import User from '../models/user';
 import config from '../config/config';
-import redisClient from '../config/redis';
+// import redisClient from '../config/redis';
 import { hashData } from '../helpers/encryption';
 
 /**
