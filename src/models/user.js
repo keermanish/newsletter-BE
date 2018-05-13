@@ -224,6 +224,8 @@ userSchema.statics.findUserByToken = function(token) {
   var decode = null;
   var user = this;
 
+  console.log('token 222', token);
+
   if(!token) {
     return Promise.reject({'status': 401});
   }
@@ -232,6 +234,8 @@ userSchema.statics.findUserByToken = function(token) {
 
     /* check whether token is valid or not */
     decode = jwt.verify(token, config.AUTH_KEY);
+
+    console.log('decode 222', decode);
 
     if (!decode) {
       throw Error('401');

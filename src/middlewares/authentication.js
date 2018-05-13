@@ -7,8 +7,12 @@ import User from '../models/user';
 export const isAuthorizedUser = (req, res, next) => {
   const token = req.header('x-auth');
 
+  console.log('token', token);
+
   User.findUserByToken(token)
     .then(user => {
+      console.log('user', user);
+
       if(!user) {
         return Promise.reject({'status': 401});
       }
