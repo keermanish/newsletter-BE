@@ -246,8 +246,6 @@ userSchema.statics.findUserByToken = function (token) {
   var decode = null;
   var user = this;
 
-  console.log('token 222', token);
-
   if (!token) {
     return Promise.reject({ 'status': 401 });
   }
@@ -257,10 +255,8 @@ userSchema.statics.findUserByToken = function (token) {
     /* check whether token is valid or not */
     decode = _jsonwebtoken2.default.verify(token, _config2.default.AUTH_KEY);
 
-    console.log('decode 222', decode);
-
     if (!decode) {
-      throw Error('401');
+      return Promise.reject({ 'status': 401 });
     }
   } catch (e) {
     return Promise.reject({ 'status': 401 });
