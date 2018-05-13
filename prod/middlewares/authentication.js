@@ -18,7 +18,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var isAuthorizedUser = exports.isAuthorizedUser = function isAuthorizedUser(req, res, next) {
   var token = req.header('x-auth');
 
+  console.log('token', token);
+
   _user2.default.findUserByToken(token).then(function (user) {
+    console.log('user', user);
+
     if (!user) {
       return Promise.reject({ 'status': 401 });
     }
@@ -28,6 +32,6 @@ var isAuthorizedUser = exports.isAuthorizedUser = function isAuthorizedUser(req,
 
     next();
   }).catch(function (err) {
-    res.status(401).send('Unauthorized, Please login');
+    res.status(401).send('Unauthorized, Please login here', err);
   });
 };
