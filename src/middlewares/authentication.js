@@ -7,11 +7,8 @@ import User from '../models/user';
 export const isAuthorizedUser = (req, res, next) => {
   const token = req.header('x-auth');
 
-  console.log('token', token);
-
   User.findUserByToken(token)
     .then(user => {
-      console.log('user', user);
 
       if(!user) {
         return Promise.reject({'status': 401});
@@ -23,6 +20,6 @@ export const isAuthorizedUser = (req, res, next) => {
       next();
     })
     .catch(err => {
-      res.status(401).send('Unauthorized, Please login here', err);
+      res.status(401).send('Unauthorized, Please login');
     });
 };
