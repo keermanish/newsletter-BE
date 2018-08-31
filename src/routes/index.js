@@ -81,7 +81,7 @@ routes.use('/work', isAuthorizedUser, workRoutes);
 routes.use(commonRoutes);
 
 // test route
-app.get('/test', (req, res) => {
+routes.get('/test', (req, res) => {
   res.status(200).send('Server is up')
 });
 

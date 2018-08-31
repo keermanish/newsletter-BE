@@ -120,7 +120,7 @@ routes.use('/work', _authentication3.isAuthorizedUser, _work2.default);
 routes.use(_common2.default);
 
 // test route
-app.get('/test', function (req, res) {
+routes.get('/test', function (req, res) {
   res.status(200).send('Server is up');
 });
 
