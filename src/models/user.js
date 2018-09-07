@@ -123,10 +123,6 @@ const userSchema = new mongoose.Schema({
     'trim': true,
     'default': ''
   },
-  'previousExp': {
-    'type': Number,
-    'required': [true, 'Please enter your previous experience'],
-  },
   'domain': {
     'type': String,
     'enum': {
