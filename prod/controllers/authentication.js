@@ -56,7 +56,6 @@ var createUser = exports.createUser = function createUser(req, res) {
     'dob': req.body.dob ? (0, _moment2.default)(req.body.dob).toDate() : null,
     'doj': req.body.doj ? (0, _moment2.default)(req.body.doj).toDate() : (0, _moment2.default)().toDate(),
     'role': req.body.role || 'normal',
-    'previousExp': req.body.previousExp,
     'domain': req.body.domain,
     'skills': req.body.skills,
     'visa': req.body.visa,

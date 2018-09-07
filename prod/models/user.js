@@ -143,10 +143,6 @@ var userSchema = new _mongoose2.default.Schema({
     'trim': true,
     'default': ''
   },
-  'previousExp': {
-    'type': Number,
-    'required': [true, 'Please enter your previous experience']
-  },
   'domain': {
     'type': String,
     'enum': {
