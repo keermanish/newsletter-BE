@@ -71,7 +71,7 @@ export const setAvatar = (req, res) => {
   const oldAvatarPath = req.user.avatar;
 
   cloudinary.v2.uploader
-    .upload(req.file, (error, result) => {
+    .upload(req.file.path, (error, result) => {
       if(error) {
         return res.status(400).send(error);
       }
