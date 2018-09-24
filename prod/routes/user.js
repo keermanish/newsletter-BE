@@ -14,8 +14,6 @@ var _multer2 = _interopRequireDefault(_multer);
 
 var _user = require('../controllers/user');
 
-var _upload = require('../config/upload');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var userRoutes = _express2.default.Router();
@@ -49,7 +47,7 @@ userRoutes.put('/:id', _user.updateUser);
  * route to set user avatar
  * POST /user/avatar
  */
-userRoutes.post('/avatar', _upload.avatarUpload, _user.setAvatar);
+userRoutes.post('/avatar', _user.setAvatar);
 
 /**
  * route to logout current user

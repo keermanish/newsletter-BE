@@ -3,6 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _cloudinary = require('cloudinary');
+
+var _cloudinary2 = _interopRequireDefault(_cloudinary);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var applicationPrivateConfig = {
   development: {
     PORT: 3000,
@@ -33,6 +40,12 @@ var applicationPublicConfig = {
     "API_URL": "https://newsletter-be.herokuapp.com"
   }
 };
+
+_cloudinary2.default.config({
+  cloud_name: 'makeer02',
+  api_key: '158494249426276',
+  api_secret: 'c1LuEO4jt6FZzaiOc2_92S829hc'
+});
 
 /**
  * common configuration

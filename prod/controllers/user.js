@@ -17,6 +17,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _cloudinary = require('cloudinary');
+
+var _cloudinary2 = _interopRequireDefault(_cloudinary);
+
 var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
@@ -89,22 +93,25 @@ var getUserList = exports.getUserList = function getUserList(req, res) {
 var setAvatar = exports.setAvatar = function setAvatar(req, res) {
   var oldAvatarPath = req.user.avatar;
 
-  _user2.default.findByIdAndUpdate(req.user._id, {
-    '$set': {
-      'avatar': _config2.default.API_URL + '/uploads/avatar/' + req.file.filename
-    }
-  }, {
-    'new': true
-  }).then(function (user) {
-
-    /* check for old avatar */
-    if (oldAvatarPath) {
-      _fs2.default.unlink(_path2.default.join(__dirname, './../../', oldAvatarPath));
+  _cloudinary2.default.v2.uploader.upload(req.file, function (error, result) {
+    if (error) {
+      return res.status(400).send(error);
     }
 
-    res.send(user);
-  }).catch(function (err) {
-    res.status(400).send('Unable to set profile pic, Please try again');
+    _user2.default.findByIdAndUpdate(req.user._id, {
+      '$set': {
+        'avatar': result.url
+      }
+    }, {
+      'new': true
+    }).then(function (user) {
+
+      res.send(user);
+    }).catch(function (err) {
+      res.status(400).send('Unable to set profile pic, Please try again');
+    });
+
+    return result;
   });
 };
 
