@@ -93,7 +93,7 @@ var getUserList = exports.getUserList = function getUserList(req, res) {
 var setAvatar = exports.setAvatar = function setAvatar(req, res) {
   var oldAvatarPath = req.user.avatar;
 
-  _cloudinary2.default.v2.uploader.upload(req.file, function (error, result) {
+  _cloudinary2.default.v2.uploader.upload(req.file.path, function (error, result) {
     if (error) {
       return res.status(400).send(error);
     }
