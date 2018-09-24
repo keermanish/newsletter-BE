@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+import cloudinary from 'cloudinary';
 
 import User from '../models/user';
 import config from '../config/config';
@@ -69,24 +70,28 @@ export const getUserList = (req, res) => {
 export const setAvatar = (req, res) => {
   const oldAvatarPath = req.user.avatar;
 
-  User.findByIdAndUpdate(req.user._id, {
-      '$set': {
-        'avatar': `${config.API_URL}/uploads/avatar/${req.file.filename}`
-      }
-    }, {
-      'new': true
-    })
-    .then(user => {
-
-      /* check for old avatar */
-      if(oldAvatarPath) {
-        fs.unlink(path.join(__dirname, './../../', oldAvatarPath));
+  cloudinary.v2.uploader
+    .upload(req.file, (error, result) => {
+      if(error) {
+        return res.status(400).send(error);
       }
 
-      res.send(user);
-    })
-    .catch(err => {
-      res.status(400).send('Unable to set profile pic, Please try again');
+      User.findByIdAndUpdate(req.user._id, {
+        '$set': {
+          'avatar': result.url
+        }
+      }, {
+        'new': true
+      })
+      .then(user => {
+
+        res.send(user);
+      })
+      .catch(err => {
+        res.status(400).send('Unable to set profile pic, Please try again');
+      });
+
+      return result;
     });
 };
 

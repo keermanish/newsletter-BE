@@ -11,8 +11,6 @@ import {
   logoutCurrentUser
 } from '../controllers/user';
 
-import { avatarUpload } from '../config/upload';
-
 const userRoutes = express.Router();
 
 /**
@@ -44,7 +42,7 @@ userRoutes.put('/:id', updateUser);
  * route to set user avatar
  * POST /user/avatar
  */
-userRoutes.post('/avatar', avatarUpload, setAvatar);
+userRoutes.post('/avatar', setAvatar);
 
 /**
  * route to logout current user

@@ -1,3 +1,4 @@
+import cloudinary from 'cloudinary';
 import applicationPrivateConfig from './config.json';
 
 const applicationPublicConfig = {
@@ -11,6 +12,12 @@ const applicationPublicConfig = {
     "API_URL": "https://newsletter-be.herokuapp.com"
   }
 };
+
+cloudinary.config({
+  cloud_name: 'makeer02',
+  api_key: '158494249426276',
+  api_secret: 'c1LuEO4jt6FZzaiOc2_92S829hc'
+});
 
 /**
  * common configuration

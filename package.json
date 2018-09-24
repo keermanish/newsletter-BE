@@ -34,6 +34,7 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
+    "cloudinary": "^1.11.0",
     "compression": "^1.7.1",
     "cors": "^2.8.4",
     "express": "^4.16.2",
