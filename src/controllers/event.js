@@ -2,6 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
+import cloudinary from 'cloudinary';
 
 import Event from '../models/event';
 
@@ -114,24 +115,31 @@ export const addEvent = (req, res) => {
 export const setEventPic = (req, res) => {
   const oldEventPicPath = req.event.eventPic;
 
-  Event.findByIdAndUpdate(req.event._id, {
-      '$set': {
-        'eventPic': `${config.API_URL}/uploads/eventPic/${req.file.filename}`
-      }
-    }, {
-      'new': true
-    })
-    .then(event => {
-
-      /* check for old eventPic */
-      if(oldEventPicPath) {
-        fs.unlink(path.join(__dirname, './../../', oldEventPicPath));
+  cloudinary.v2.uploader
+    .upload(req.file.path, (error, result) => {
+      if(error) {
+        return res.status(400).send(error);
       }
 
-      res.send(event);
-    })
-    .catch(err => {
-      res.status(400).send('Unable to set profile pic, Please try again');
+      Event.findByIdAndUpdate(req.event._id, {
+        '$set': {
+          'eventPic': result.url
+        }
+      }, {
+        'new': true
+      })
+      .then(event => {
+
+        /* check for old eventPic */
+        if(oldEventPicPath) {
+          fs.unlink(path.join(__dirname, './../../', oldEventPicPath));
+        }
+
+        res.send(event);
+      })
+      .catch(err => {
+        res.status(400).send('Unable to set profile pic, Please try again');
+      });
     });
 };
 
