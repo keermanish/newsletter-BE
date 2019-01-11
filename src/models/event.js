@@ -17,6 +17,9 @@ const eventSchema = new mongoose.Schema({
       'message': 'Please enter a valid event title'
     }
   },
+  'eventPic': {
+    'type': String
+  },
   'organiser': {
     'type': mongoose.Schema.Types.ObjectId,
     'ref': 'User'

@@ -113,34 +113,40 @@ export const addEvent = (req, res) => {
  * POST /event/pic
  */
 export const setEventPic = (req, res) => {
-  const oldEventPicPath = req.event.eventPic;
+  const eventID = req.params.id;
 
-  cloudinary.v2.uploader
-    .upload(req.file.path, (error, result) => {
-      if(error) {
-        return res.status(400).send(error);
-      }
+  Event
+    .findById(eventID)
+    .then(event => {
+      const oldEventPicPath = event.eventPic;
 
-      Event.findByIdAndUpdate(req.event._id, {
-        '$set': {
-          'eventPic': result.url
-        }
-      }, {
-        'new': true
-      })
-      .then(event => {
+      cloudinary.v2.uploader
+        .upload(req.file.path, (error, result) => {
+          if(error) {
+            return res.status(400).send(error);
+          }
 
-        /* check for old eventPic */
-        if(oldEventPicPath) {
-          fs.unlink(path.join(__dirname, './../../', oldEventPicPath));
-        }
+          Event.findByIdAndUpdate(event._id, {
+            '$set': {
+              'eventPic': result.url
+            }
+          }, {
+            'new': true
+          })
+          .then(event => {
 
-        res.send(event);
-      })
-      .catch(err => {
-        res.status(400).send('Unable to set profile pic, Please try again');
-      });
-    });
+            /* check for old eventPic */
+            if(oldEventPicPath) {
+              fs.unlink(path.join(__dirname, './../../', oldEventPicPath));
+            }
+
+            res.send(event);
+          })
+          .catch(err => {
+            res.status(400).send('Unable to set profile pic, Please try again');
+          });
+        });
+    })
 };
 
 /**

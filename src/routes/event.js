@@ -34,7 +34,7 @@ eventRoutes.put('/:id', updateEvent);
  * route to set event avatar
  * POST /event/avatar
  */
-eventRoutes.post('/pic', eventPicUpload, setEventPic);
+eventRoutes.post('/pic/:id', eventPicUpload, setEventPic);
 
 /**
  * controller to remove event info
