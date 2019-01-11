@@ -133,29 +133,33 @@ var addEvent = exports.addEvent = function addEvent(req, res) {
  * POST /event/pic
  */
 var setEventPic = exports.setEventPic = function setEventPic(req, res) {
-  var oldEventPicPath = req.event.eventPic;
+  var eventID = req.params.id;
 
-  _cloudinary2.default.v2.uploader.upload(req.file.path, function (error, result) {
-    if (error) {
-      return res.status(400).send(error);
-    }
+  _event2.default.findById(eventID).then(function (event) {
+    var oldEventPicPath = event.eventPic;
 
-    _event2.default.findByIdAndUpdate(req.event._id, {
-      '$set': {
-        'eventPic': result.url
-      }
-    }, {
-      'new': true
-    }).then(function (event) {
-
-      /* check for old eventPic */
-      if (oldEventPicPath) {
-        _fs2.default.unlink(_path2.default.join(__dirname, './../../', oldEventPicPath));
+    _cloudinary2.default.v2.uploader.upload(req.file.path, function (error, result) {
+      if (error) {
+        return res.status(400).send(error);
       }
 
-      res.send(event);
-    }).catch(function (err) {
-      res.status(400).send('Unable to set profile pic, Please try again');
+      _event2.default.findByIdAndUpdate(event._id, {
+        '$set': {
+          'eventPic': result.url
+        }
+      }, {
+        'new': true
+      }).then(function (event) {
+
+        /* check for old eventPic */
+        if (oldEventPicPath) {
+          _fs2.default.unlink(_path2.default.join(__dirname, './../../', oldEventPicPath));
+        }
+
+        res.send(event);
+      }).catch(function (err) {
+        res.status(400).send('Unable to set profile pic, Please try again');
+      });
     });
   });
 };

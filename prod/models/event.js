@@ -24,6 +24,9 @@ var eventSchema = new _mongoose2.default.Schema({
       'message': 'Please enter a valid event title'
     }
   },
+  'eventPic': {
+    'type': String
+  },
   'organiser': {
     'type': _mongoose2.default.Schema.Types.ObjectId,
     'ref': 'User'
