@@ -90,7 +90,7 @@ const userSchema = new mongoose.Schema({
     'enum': {
       'values': ['active', 'inactive', 'pending']
     },
-    'default': 'pending'
+    'default': 'active'
   },
   'dob': {
     'type': Date,

@@ -110,7 +110,7 @@ var userSchema = new _mongoose2.default.Schema({
     'enum': {
       'values': ['active', 'inactive', 'pending']
     },
-    'default': 'pending'
+    'default': 'active'
   },
   'dob': {
     'type': Date,
