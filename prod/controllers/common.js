@@ -9,6 +9,10 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _email = require('../config/email');
+
+var _email2 = _interopRequireDefault(_email);
+
 var _user = require('../models/user');
 
 var _user2 = _interopRequireDefault(_user);
@@ -46,9 +50,21 @@ var sendOTPLink = exports.sendOTPLink = function sendOTPLink(req, res) {
 
     return user.generateOTP();
   }).then(function (user) {
-    res.status(200).send({
-      'otp': user.otp,
-      'userID': user._id
+    var mailOptions = {
+      from: 'keermanishdev@gmail.com',
+      to: req.body.email,
+      subject: 'Studiofy - Password Reset - OTP',
+      text: 'OTP - ' + user.otp
+    };
+
+    _email2.default.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        res.status(400).send(error);
+      } else {
+        console.log('Email sent: ', info.response);
+        res.status(200).send('OTP has been sent to ' + req.body.email);
+      }
     });
   }).catch(function (err) {
     var errCode = err && err.status ? err.status : 400;
