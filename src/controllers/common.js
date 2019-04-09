@@ -1,5 +1,6 @@
 import path from 'path';
 
+import gmailTransporter from '../config/email';
 import User from '../models/user';
 
 /**
@@ -35,9 +36,21 @@ export const sendOTPLink = (req, res) => {
       return user.generateOTP();
     })
     .then(user => {
-      res.status(200).send({
-        'otp': user.otp,
-        'userID': user._id
+      const mailOptions = {
+        from: 'keermanishdev@gmail.com',
+        to: req.body.email,
+        subject: 'Studiofy - Password Reset - OTP',
+        text: `OTP - ${user.otp}`
+      };
+
+      gmailTransporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+          res.status(400).send(error);
+        } else {
+          console.log('Email sent: ', info.response);
+          res.status(200).send(`OTP has been sent to ${req.body.email}`);
+        }
       });
     })
     .catch(err => {
