@@ -40,7 +40,7 @@ export const sendOTPLink = (req, res) => {
         from: 'keermanishdev@gmail.com',
         to: req.body.email,
         subject: 'Studiofy - Password Reset - OTP',
-        text: `OTP - ${user.otp} <br> User ID - ${user._id}`
+        text: `OTP - ${user.otp} and User ID - ${user._id}`
       };
 
       gmailTransporter.sendMail(mailOptions, (error, info) => {
