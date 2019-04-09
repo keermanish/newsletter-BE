@@ -54,7 +54,7 @@ var sendOTPLink = exports.sendOTPLink = function sendOTPLink(req, res) {
       from: 'keermanishdev@gmail.com',
       to: req.body.email,
       subject: 'Studiofy - Password Reset - OTP',
-      text: 'OTP - ' + user.otp
+      text: 'OTP - ' + user.otp + ' and User ID - ' + user._id
     };
 
     _email2.default.sendMail(mailOptions, function (error, info) {
