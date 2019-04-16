@@ -48,6 +48,7 @@ export const createUser = (req, res) => {
     'domain': req.body.domain,
     'skills': req.body.skills,
     'visa': req.body.visa,
+    'otherVisa': req.body.otherVisa,
     'about': req.body.about
   });
 

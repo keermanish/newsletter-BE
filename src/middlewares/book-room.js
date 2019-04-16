@@ -111,7 +111,7 @@ export const checkRoomAvailablity = (req, res, next) => {
     res.status(400).send('Please provide slots details');
   } else if(req.body.slots) {
     res.status(400).send('Please provide location details');
-  }else {
+  } else {
     next();
   }
 };
