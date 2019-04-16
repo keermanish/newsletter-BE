@@ -35,6 +35,11 @@ var eventSchema = new _mongoose2.default.Schema({
     'type': String,
     'required': [true, 'Please provied event venue']
   },
+  otherLocation: {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
   'invitees': {
     'type': String,
     'trim': true,

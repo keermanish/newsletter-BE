@@ -138,6 +138,11 @@ var userSchema = new _mongoose2.default.Schema({
     'trim': true,
     'default': ''
   },
+  'otherVisa': {
+    'type': String,
+    'trim': true,
+    'default': ''
+  },
   'about': {
     'type': String,
     'trim': true,
